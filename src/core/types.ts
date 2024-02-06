@@ -70,7 +70,8 @@ export function convertToFrame(json: any) {
 
 export type FrameButtonMetadata = {
   label: string;
-  action?: 'post' | 'post_redirect';
+  action?: 'post' | 'post_redirect' | 'link' | 'mint';
+  target?: string;
 };
 
 export type FrameInputMetadata = {
