@@ -1,8 +1,9 @@
-// 🌲
-const version = '0.3.0';
-
-export { version };
-export { getFrameAccountAddress } from './core/getFrameAccountAddress';
+// 🌲☀️🌲
+export { version } from './version';
+export { getFrameHtmlResponse } from './core/getFrameHtmlResponse';
 export { getFrameMetadata } from './core/getFrameMetadata';
 export { getFrameMessage } from './core/getFrameMessage';
-export type { FrameRequest, FrameData } from './core/farcasterTypes';
+export { FrameMetadata } from './components/FrameMetadata';
+export { Name } from './components/Name';
+export { useName } from './hooks/useName';
+export type { FrameMetadataType, FrameRequest, FrameValidationData } from './core/types';

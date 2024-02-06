@@ -1,14 +1,42 @@
-<img src='./docs/logo-v-0-3.png' width='800' alt='OnchainKit'>
+<p align="center">
+  <a href="https://github.com/coinbase/onchainkit">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="./docs/logo-v-0-5.png">
+      <img alt="OnchainKit logo vibes" src="./docs/logo-v-0-4.png" width="auto">
+    </picture>
+  </a>
+</p>
 
-# [OnchainKit](https://github.com/coinbase/onchainkit/)
+# OnchainKit
 
-> OnchainKit is a collection of tools to build world-class onchain apps with CSS, React, and Typescript.
+<p align="left">
+  OnchainKit is a collection of tools to build world-class onchain apps with CSS, React, and Typescript.
+<p>
+
+<p align="left">
+  <a href="https://www.npmjs.com/package/@coinbase/onchainkit">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/v/@coinbase/onchainkit?colorA=21262d&colorB=21262d&style=flat">
+      <img src="https://img.shields.io/npm/v/viem?colorA=f6f8fa&colorB=f6f8fa&style=flat" alt="Version">
+    </picture>
+  </a>
+  <a href="https://github.com/coinbase/onchainkit/blob/main/LICENSE.md">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/l/@coinbase/onchainkit?colorA=21262d&colorB=21262d&style=flat">
+      <img src="https://img.shields.io/npm/l/@coinbase/onchainkit?colorA=f6f8fa&colorB=f6f8fa&style=flat" alt="MIT License">
+    </picture>
+  </a>
+  <a href="https://www.npmjs.com/package/@coinbase/onchainkit">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/dm/@coinbase/onchainkit?colorA=21262d&colorB=21262d&style=flat">
+      <img src="https://img.shields.io/npm/dm/@coinbase/onchainkit?colorA=f6f8fa&colorB=f6f8fa&style=flat" alt="Downloads per month">
+    </picture>
+  </a>
+</p>
 
 ## Getting Started
 
 Add OnchainKit to your project, install the required packages.
-
-<br />
 
 ```bash
 # Use Yarn
@@ -22,90 +50,199 @@ pnpm add @coinbase/onchainkit
 ```
 
 <br />
+
+OnchainKit is divided into various theme utilities and components that are available for your use:
+
+- [Frame Kit 🖼️](https://github.com/coinbase/onchainkit?tab=readme-ov-file#frame-kit-%EF%B8%8F)
+- [Identity Kit 👨‍🚀](https://github.com/coinbase/onchainkit?tab=readme-ov-file#identity-kit-)
+
+<br />
 <br />
 
-## FrameKit 🖼️
+## Frame Kit 🖼️
 
 A Frame transforms any cast into an interactive app.
 
-Creating a frame is easy: select an image and add clickable buttons. When a button is clicked, you receive a callback and can send another image with more buttons. To learn more, check out "[Farcaster Frames Official Documentation](https://warpcast.notion.site/Farcaster-Frames-4bd47fe97dc74a42a48d3a234636d8c5)".
+Creating a frame is easy: select an image and add clickable buttons. When a button is clicked, you receive a callback and can send another image with more buttons. To learn more, check out "[Farcaster Frames Official Documentation](https://docs.farcaster.xyz/learn/what-is-farcaster/frames)".
 
-Utilities:
+**React component**:
 
-- [getFrameAccountAddress()](https://github.com/coinbase/onchainkit?tab=readme-ov-file#getframeaccountaddress)
-- [getFrameMessage()](https://github.com/coinbase/onchainkit?tab=readme-ov-file#getFrameMessage)
-- [getFrameMetadata()](https://github.com/coinbase/onchainkit?tab=readme-ov-file#getFrameMetadata)
+- `<FrameMetadata />`: This component renders all the Frame metadata elements in one place.
+
+**Typescript utilities**:
+
+- [`getFrameHtmlResponse()`](https://github.com/coinbase/onchainkit?tab=readme-ov-file#getframehtmlresponseframemetadata): Retrieves the **Frame HTML** for your HTTP responses.
+- [`getFrameMessage()`](https://github.com/coinbase/onchainkit?tab=readme-ov-file#getframemessageframerequest): Retrieves a valid **Frame message** from the Frame Signature Packet.
+- [`getFrameMetadata()`](https://github.com/coinbase/onchainkit?tab=readme-ov-file#getframeframemetadata): Retrieves valid **Frame metadata** for your initial HTML page with Next.js App Routing.
 
 <br />
 
-### getFrameAccountAddress(message, options)
+### `<FrameMetadata />`
 
-When a user interacts with your Frame, you will receive a JSON message called the "Frame Signature Packet." Once you validate this `message`, you can extract the Account Address by using the `getFrameAccountAddress(message)` function.
+This component is utilized for incorporating Frame metadata elements into the React page.
 
-This Account Address can then be utilized for subsequent operations, enhancing the personalized experience of each individual using the Frame.
+Note: If you are using Next.js with App routing, it is recommended to use `getFrameMetadata` instead.
 
-Note: To utilize this function, we rely on [Neynar APIs](https://docs.neynar.com/reference/user-bulk). In order to avoid rate limiting, please ensure that you have your own API KEY. Sign up [here](https://neynar.com).
+```tsx
+export default function HomePage() {
+  return (
+    ...
+    <FrameMetadata
+      buttons={[
+        {
+          label: 'Tell me the story',
+        },
+        {
+          label: 'Redirect to cute dog pictures',
+          action: 'post_redirect',
+        },
+      ]}
+      image="https://zizzamia.xyz/park-1.png"
+      input={{
+        text: 'Tell me a boat story',
+      }}
+      post_url="https://zizzamia.xyz/api/frame"
+    />
+    ...
+  );
+}
+```
+
+**@Props**
 
 ```ts
-// Steps 1. import getFrameAccountAddress from @coinbase/onchainkit
-import { FrameRequest, getFrameAccountAddress, getFrameMessage } from '@coinbase/onchainkit';
+type Button = {
+  label: string;
+  action?: 'post' | 'post_redirect';
+};
+
+type InputMetadata = {
+  text: string;
+};
+
+type FrameMetadataType = {
+  // A list of strings which are the label for the buttons in the frame (max 4 buttons).
+  buttons?: [Button, ...Button[]];
+  // An image which must be smaller than 10MB and should have an aspect ratio of 1.91:1
+  image: string;
+  // The text input to use for the Frame.
+  input?: InputMetadata;
+  // A valid POST URL to send the Signature Packet to.
+  post_url?: string;
+  // A period in seconds at which the app should expect the image to update.
+  refresh_period?: number;
+};
+```
+
+**@Returns**
+
+```html
+<meta name="fc:frame" content="vNext" />
+<meta name="fc:frame:button:1" content="Tell me the story" />
+<meta name="fc:frame:button:2" content="Redirect to cute dog pictures" />
+<meta name="fc:frame:button:2:action" content="post_redirect" />
+<meta name="fc:frame:image" content="https://zizzamia.xyz/park-1.png" />
+<meta name="fc:frame:input:text" content="Tell me a boat story" />
+<meta name="fc:frame:post_url" content="https://zizzamia.xyz/api/frame" />
+```
+
+<br />
+
+### getFrameHtmlResponse(frameMetadata)
+
+When you need to send an HTML Frame Response, the `getFrameHtmlResponse` method is here to assist you.
+
+It generates a valid HTML string response with a frame and utilizes `FrameMetadata` types for page metadata. This eliminates the need to manually create server-side HTML strings.
+
+```ts
+// Step 1. import getFrameHtmlResponse from @coinbase/onchainkit
+import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-  let accountAddress = '';
-  // Step 2. Read the body from the Next Request
-  const body: FrameRequest = await req.json();
-  // Step 3. Validate the message
-  const { isValid, message } = await getFrameMessage(body);
-
-  // Step 4. Determine the experience based on the validity of the message
-  if (isValid) {
-    // Step 5. Get from the message the Account Address of the user using the Frame
-    accountAddress = await getFrameAccountAddress(message, { NEYNAR_API_KEY: 'NEYNAR_API_DOCS' });
-  } else {
-    // sorry, the message is not valid and it will be undefined
-  }
-
+  // Step 2. Build your Frame logic
   ...
+
+  return new NextResponse(
+    // Step 3. Use getFrameHtmlResponse to create a Frame response
+    getFrameHtmlResponse({
+      buttons: [
+        {
+          label: `We love BOAT`,
+        },
+      ],
+      image:'https://build-onchain-apps.vercel.app/release/v-0-17.png',
+      post_url: 'https://build-onchain-apps.vercel.app/api/frame',
+    }),
+  );
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
-
-export const dynamic = 'force-dynamic';
 ```
 
 **@Param**
 
-- `message`: The validated message from the Frame
-- `options`:
-  - `NEYNAR_API_KEY`: The NEYNAR_API_KEY used to access [Neynar Farcaster Indexer](https://docs.neynar.com/reference/user-bulk)
+```ts
+type Button = {
+  label: string;
+  action?: 'post' | 'post_redirect';
+};
+
+type InputMetadata = {
+  text: string;
+};
+
+type FrameMetadataType = {
+  // A list of strings which are the label for the buttons in the frame (max 4 buttons).
+  buttons?: [Button, ...Button[]];
+  // An image which must be smaller than 10MB and should have an aspect ratio of 1.91:1
+  image: string;
+  // The text input to use for the Frame.
+  input?: InputMetadata;
+  // A valid POST URL to send the Signature Packet to.
+  post_url?: string;
+  // A period in seconds at which the app should expect the image to update.
+  refresh_period?: number;
+};
+```
 
 **@Returns**
 
 ```ts
-type AccountAddressResponse = Promise<string | undefined>;
+type FrameHTMLResponse = string;
 ```
 
 <br />
 
-### getFrameMessage()
+### getFrameMessage(frameRequest)
 
 When a user interacts with your Frame, you receive a JSON message called the "Frame Signature Packet". Decode and validate this message using the `getFrameMessage` function.
 
-It returns undefined if the message is not valid.
+You can also use `getFrameMessage` to access useful information such as:
+
+- button: number
+- fid: number
+- following: boolean
+- liked: boolean
+- recasted: boolean
+- verified_accounts: string[]
+
+Note that if the `message` is not valid, it will be undefined.
 
 ```ts
-// Steps 1. import getFrameMessage from @coinbase/onchainkit
-import { getFrameMessage } from '@coinbase/onchainkit';
+// Step 1. import getFrameMessage from @coinbase/onchainkit
+import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Step 2. Read the body from the Next Request
-  const body = await req.json();
+  const body: FrameRequest = await req.json();
   // Step 3. Validate the message
-  const { isValid, message } = await getFrameMessage(body);
+  const { isValid, message } = await getFrameMessage(body , {
+    neynarApiKey: 'NEYNAR_ONCHAIN_KIT'
+  });
 
   // Step 4. Determine the experience based on the validity of the message
   if (isValid) {
@@ -120,13 +257,28 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
-
-export const dynamic = 'force-dynamic';
 ```
 
 **@Param**
 
-- `body`: The Frame Signature Packet body
+```ts
+// The Frame Signature Packet body
+type FrameMessage = {
+  body: FrameRequest;
+  messageOptions?: FrameMessageOptions;
+};
+
+type FrameMessageOptions =
+  | {
+      // The API key to use for validation. Default: NEYNAR_ONCHAIN_KIT
+      neynarApiKey?: string;
+      // Whether to cast the reaction context. Default: true
+      castReactionContext?: boolean;
+      // Whether to follow the context. Default: true
+      followContext?: boolean;
+    }
+  | undefined;
+```
 
 **@Returns**
 
@@ -134,38 +286,44 @@ export const dynamic = 'force-dynamic';
 type Promise<FrameValidationResponse>;
 
 type FrameValidationResponse =
-  | { isValid: true; message: FrameData }
+  | { isValid: true; message: FrameValidationData }
   | { isValid: false; message: undefined };
 
-interface FrameData {
-  fid: number;
-  url: string;
-  messageHash: string;
-  timestamp: number;
-  network: number;
-  buttonIndex: number;
-  castId: {
-    fid: number;
-    hash: string;
+interface FrameValidationData {
+  button: number; // Number of the button clicked
+  following: boolean; // Indicates if the viewer clicking the frame follows the cast author
+  input: string; // Text input from the viewer typing in the frame
+  interactor: {
+    fid: number; // Viewer Farcaster ID
+    custody_address: string; // Viewer custody address
+    verified_accounts: string[]; // Viewer account addresses
   };
+  liked: boolean; // Indicates if the viewer clicking the frame liked the cast
+  raw: NeynarFrameValidationInternalModel;
+  recasted: boolean; // Indicates if the viewer clicking the frame recasted the cast
+  valid: boolean; // Indicates if the frame is valid
 }
 ```
 
 <br />
 
-### getFrameMetadata()
+### getFrameMetadata(frameMetadata)
 
-With Next.js App routing, use the `getFrameMetadata` inside your `page.ts` to get the metadata need it for your Frame.
+With Next.js App routing, use the `getFrameMetadata()` inside your `page.ts` to get the metadata need it for your Frame.
 
 ```ts
-// Steps 1. import getFrameMetadata from @coinbase/onchainkit
+// Step 1. import getFrameMetadata from @coinbase/onchainkit
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import HomePage from './home';
 
 // Step 2. Use getFrameMetadata to shape your Frame metadata
 const frameMetadata = getFrameMetadata({
-  buttons: ['boat'],
+  buttons: [
+    {
+      label: 'We love BOAT',
+    },
+  ],
   image: 'https://build-onchain-apps.vercel.app/release/v-0-17.png',
   post_url: 'https://build-onchain-apps.vercel.app/api/frame',
 });
@@ -185,17 +343,63 @@ export default function Page() {
 
 **@Param**
 
-- `buttons`: A list of strings which are the label for the buttons in the frame (max 4 buttons).
-- `image`: An image which must be smaller than 10MB and should have an aspect ratio of 1.91:1
-- `post_url`: A valid POST URL to send the Signature Packet to.
+```ts
+type Button = {
+  label: string;
+  action?: 'post' | 'post_redirect';
+};
+
+type InputMetadata = {
+  text: string;
+};
+
+type FrameMetadataType = {
+  // A list of strings which are the label for the buttons in the frame (max 4 buttons).
+  buttons?: [Button, ...Button[]];
+  // An image which must be smaller than 10MB and should have an aspect ratio of 1.91:1
+  image: string;
+  // The text input to use for the Frame.
+  input?: InputMetadata;
+  // A valid POST URL to send the Signature Packet to.
+  post_url?: string;
+  // A period in seconds at which the app should expect the image to update.
+  refresh_period?: number;
+};
+```
 
 **@Returns**
 
 ```ts
-type FrameMetadataResponse = {
-  buttons: string[];
-  image: string;
-  post_url: string;
+type FrameMetadataResponse = Record<string, string>;
+```
+
+<br />
+<br />
+
+## Identity Kit 👨‍🚀
+
+### Name
+
+The `Name` component is used to display ENS names associated with Ethereum addresses. When an ENS name is not available, it defaults to showing a truncated version of the address.
+
+```tsx
+import { Name } from '@coinbase/onchainkit';
+
+<Name address="0x1234567890abcdef1234567890abcdef12345678" sliced={false} />;
+```
+
+**@Props**
+
+```ts
+type UseName = {
+  // Ethereum address to be resolved from ENS.
+  address: Address;
+  // Optional CSS class for custom styling.
+  className?: string;
+  // Determines if the address should be sliced when no ENS name is available.
+  sliced?: boolean;
+  // Additional HTML attributes for the span element.
+  props?: React.HTMLAttributes<HTMLSpanElement>;
 };
 ```
 
@@ -231,12 +435,28 @@ OnchainKit is all about community; for any questions, feel free to:
         <br />
         <a href="https://twitter.com/alvaroraminelli">Alvaro Raminelli</a>
       </td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">
+        <a href="https://twitter.com/taycaldwell_">
+          <img width="80" height="80" src="https://github.com/taycaldwell.png?s=100">
+        </a>
+        <br />
+        <a href="https://twitter.com/taycaldwell_">Taylor Caldwell</a>
+      </td>
       <td align="center" valign="top">
         <a href="https://warpcast.com/cnasc">
           <img width="80" height="80" src="https://github.com/cnasc.png?s=100">
         </a>
         <br />
         <a href="https://warpcast.com/cnasc">Chris Nascone</a>
+      </td>
+      <td align="center" valign="top">
+        <a href="https://twitter.com/wespickett">
+          <img width="80" height="80" src="https://github.com/wespickett.png?s=100">
+        </a>
+        <br />
+        <a href="https://twitter.com/wespickett">Wesley Pickett</a>
       </td>
     </tr>
   </tbody>

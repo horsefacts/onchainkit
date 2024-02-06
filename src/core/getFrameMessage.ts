@@ -1,16 +1,16 @@
-import { HubRpcClient, Message, getSSLHubRpcClient } from '@farcaster/hub-nodejs';
-import { convertToFrame, FrameRequest, FrameValidationResponse } from './farcasterTypes';
+import { FrameRequest, FrameValidationResponse } from './types';
+import {
+  NEYNAR_DEFAULT_API_KEY,
+  neynarFrameValidation,
+} from '../utils/neynar/frame/neynarFrameFunctions';
 
-/**
- * Farcaster Hub for signature verification,
- * consider using a private hub if needed:
- * https://docs.farcaster.xyz/hubble/hubble
- */
-const HUB_URL = 'nemes.farcaster.xyz:2283';
-
-export function getHubClient(): HubRpcClient {
-  return getSSLHubRpcClient(HUB_URL);
-}
+type FrameMessageOptions =
+  | {
+      neynarApiKey?: string;
+      castReactionContext?: boolean;
+      followContext?: boolean;
+    }
+  | undefined;
 
 /**
  * Given a frame message, decode and validate it.
@@ -19,24 +19,29 @@ export function getHubClient(): HubRpcClient {
  *
  * @param body The JSON received by server on frame callback
  */
-async function getFrameMessage(body: FrameRequest): Promise<FrameValidationResponse> {
-  // Get the message from the request body
-  const frameMessage: Message = Message.decode(
-    Buffer.from(body?.trustedData?.messageBytes ?? '', 'hex'),
-  );
+async function getFrameMessage(
+  body: FrameRequest,
+  messageOptions?: FrameMessageOptions,
+): Promise<FrameValidationResponse> {
   // Validate the message
-  const client = getHubClient();
-  const result = await client.validateMessage(frameMessage);
-  if (result.isOk() && result.value.valid && result.value.message) {
+  const response = await neynarFrameValidation(
+    body?.trustedData?.messageBytes,
+    messageOptions?.neynarApiKey || NEYNAR_DEFAULT_API_KEY,
+    messageOptions?.castReactionContext || true,
+    messageOptions?.followContext || true,
+  );
+  if (response?.valid) {
     return {
-      isValid: result.value?.valid,
-      message: convertToFrame(result?.value?.message?.data),
+      isValid: true,
+      message: response,
+    };
+  } else {
+    // Security best practice, don't return anything if we can't validate the frame.
+    return {
+      isValid: false,
+      message: undefined,
     };
   }
-  return {
-    isValid: false,
-    message: undefined,
-  };
 }
 
 export { getFrameMessage };
